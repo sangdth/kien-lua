@@ -1,26 +1,33 @@
 require('wall')
-require('ant')
 require('food')
+require('ant')
 
-SPEED = 100
+-- Object = require 'classic'
+
+GAME_SPEED = 2
 MAX_ANTS = 100
+
+-- Entities storage
+Ants = {}
 
 function love.load()
   Wall:load()
-  -- ant1 = Ant()
-  Ant:load()
   Food:load()
 end
 
 function love.update(dt)
-  -- ant1:update(dt)
-  Ant:update(dt)
   Food:update(dt)
+
+  for i,ant in ipairs(Ants) do
+    ant:update(dt)
+  end
 end
 
 function love.draw()
   Wall:draw()
-  Ant:draw()
-  -- ant1:draw()
   Food:draw()
+
+  for i,ant in ipairs(Ants) do
+    ant:draw()
+  end
 end

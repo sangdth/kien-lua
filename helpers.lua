@@ -1,6 +1,8 @@
 WW = love.graphics.getWidth()
 WH = love.graphics.getHeight()
 
+Object = require 'classic'
+
 function GetDistance(source, target)
   if not source or not target then
     return nil
@@ -25,7 +27,7 @@ function GetAngularLerp(a0, a1, t)
   return a0 + (shortestAngle * t)
 end
 
-function Predict(current, destination)
+function Predict(current, destination, speed)
   local distance = GetDistance(current,  destination)
 
   if distance == nil then
@@ -33,8 +35,8 @@ function Predict(current, destination)
   end
 
   local direction = math.atan2(distance.y, distance.x)
-  local dx = SPEED * math.cos(direction)
-  local dy = SPEED * math.sin(direction)
+  local dx = speed * math.cos(direction)
+  local dy = speed * math.sin(direction)
 
   if distance.value < 50 then
     dx = dx * distance.value / 50
@@ -44,7 +46,7 @@ function Predict(current, destination)
   return {
     x = current.x + dx,
     y = current.y + dy,
-    direction = direction
+    direction = direction,
   }
 end
 
@@ -85,5 +87,8 @@ function GetRandomCoordinates(o)
   local newX = love.math.random(o.x - 10 * step, o.x + 10 * step)
   local newY = love.math.random(o.y - 10 * step, o.y + 10 * step)
 
-  return GetBounded({ x = newX, y = newY })
+  return GetBounded({
+      x = newX,
+      y = newY,
+    })
 end
