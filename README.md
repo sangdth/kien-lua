@@ -2,6 +2,8 @@
 
 Build your ant empire. Written in 100% Lua.
 
+![ezgif-3-7496ed836f06](https://user-images.githubusercontent.com/1083478/113632125-418b8480-9673-11eb-9808-ac0b23f45094.gif)
+
 ## Develop
 
 1. Clone the project: `gh repo clone sangdth/kien-lua`.
