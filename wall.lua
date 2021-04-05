@@ -1,17 +1,15 @@
 
 
 Wall = {}
-H = love.graphics.getHeight()
-W = love.graphics.getWidth()
 
 function Wall:load()
+  self.x = 10
+  self.y = 10
+  self.width = love.graphics.getWidth() - 20
+  self.height = love.graphics.getHeight() - 20
   self.isStatic = true
 end
 
 function Wall:draw()
-  love.graphics.setColor(135,62,35)                       -- Brown color
-  love.graphics.rectangle('fill', 0, 0, 10, H)            -- Left
-  love.graphics.rectangle('fill', W - 10, 0, 10, H)       -- Right
-  love.graphics.rectangle('fill', 10, 0, W - 20, 10)      -- Top
-  love.graphics.rectangle('fill', 10, H - 10, W - 20, 10) -- Bottom
+  love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
 end

@@ -1,43 +1,51 @@
+require('helpers')
 
 Ant = {}
-Iter = 0
-MaxWallRight = love.graphics.getWidth()
-MaxWallBottom = love.graphics.getHeight()
+
+local iter = 0
+local randomPosition = { x = 100, y = 100 }
 
 function Ant:load()
-  self.x      = love.graphics.getWidth() / 2
-  self.y      = love.graphics.getHeight() / 2
-  self.width  = 5
-  self.height = 5
-  self.speed  = 1000
-end
-
-function Ant:checkWalls()
-  if self.x < 0 then
-    self.x = 1
-  elseif self.x >= 800 then
-    self.x = 800
-  elseif self.y < 0 then
-    self.y = 1
-  elseif self.y > 600 then
-    self.y = 600
-  else
-    self.x = 1
-    self.y = 1
-  end
-end
-
-function Ant:move(dt)
-  Iter = Iter + dt
-  self.x = math.sin(Iter) * love.graphics.getWidth()
-  self.y = math.sin(Iter / 1.5) * love.graphics.getHeight()
+  self.x          = 20
+  self.y          = 20
+  self.direction  = 0       -- radians
+  self.width      = 4
+  self.height     = 4
+  self.speed      = 90
+  self.lastSignal = 0
+  self.hasFood    = false
 end
 
 function Ant:update(dt)
   Ant:move(dt)
-  Ant:checkWalls()
 end
 
 function Ant:draw()
   love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
+end
+
+-- Declaration functions here, keep the load/update/draw clean
+function Ant:move(d)
+  iter = iter + 1
+
+  local currentPosition = { x = self.x, y = self.y, direction = self.direction }
+
+  local w = love.math.random(6)
+  if iter >= 10 * w then
+    iter = 0
+    randomPosition = GetBounded(GetRandomCoordinates(currentPosition))
+  end
+
+  local newPosition = Predict(currentPosition, randomPosition)
+
+  self.x = GetLerp(currentPosition.x, newPosition.x, d)
+  self.y = GetLerp(currentPosition.y, newPosition.y, d)
+end
+
+-- use this one to born new ant later
+function Ant:goOut()
+  -- local next = GetRandomCoordinates(0, 0)
+end
+
+function Ant:collide()
 end
