@@ -1,6 +1,5 @@
 WW = love.graphics.getWidth()
 WH = love.graphics.getHeight()
-SPEED = 100
 
 function GetDistance(source, target)
   if not source or not target then

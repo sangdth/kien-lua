@@ -1,9 +1,14 @@
 require('helpers')
 
+Object = require('classic')
+
+-- Array of all ants
+AntEmpire = {}
 Ant = {}
+-- Ant = Object.extend(Object)
 
 local iter = 0
-local randomPosition = { x = 100, y = 100 }
+local randomPosition = { x = 20, y = 20 }
 
 function Ant:load()
   self.x          = 20
@@ -29,6 +34,7 @@ function Ant:move(d)
   iter = iter + 1
 
   local currentPosition = { x = self.x, y = self.y, direction = self.direction }
+  print(currentPosition)
 
   local w = love.math.random(6)
   if iter >= 10 * w then
