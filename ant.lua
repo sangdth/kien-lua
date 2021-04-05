@@ -4,24 +4,35 @@ Object = require('classic')
 
 -- Array of all ants
 AntEmpire = {}
-Ant = Object:extend()
+local Ant = Object:extend()
 
 local iter = 0
-local randomPosition = { x = 20, y = 20 }
 
-function Ant:new()
-  self.x          = 20
-  self.y          = 20
+function Ant:new(x, y)
+  self.x          = x or 30
+  self.y          = y or 30
   self.direction  = 0       -- radians
   self.width      = 6
   self.height     = 6
   self.speed      = 80
   self.lastSignal = 0
   self.hasFood    = false
+  self.random     = { x = 30, y = 30, direction = 0 }
 end
 
-function Ant:update(dt)
-  Ant.move(self, dt)
+function Ant:update(d)
+  iter = iter + 1
+  local speed = GAME_SPEED * self.speed
+  local randomFactor = love.math.random(0, iter) * iter
+  local currentPosition = { x = self.x, y = self.y, direction = self.direction }
+
+  if iter >= 20 then
+    iter = 0 -- reset
+    self.random = GetRandomCoordinates(currentPosition, randomFactor)
+  end
+  local newPosition = Predict(currentPosition, self.random, speed)
+
+  Ant.move(self, newPosition, d)
 end
 
 function Ant:draw()
@@ -31,26 +42,10 @@ function Ant:draw()
 end
 
 -- Declaration functions here, keep the load/update/draw clean
-function Ant:move(d)
-  iter = iter + 1
-
-  local currentPosition = {
-    x = self.x,
-    y = self.y,
-    direction = self.direction,
-  }
-
-  local w = love.math.random(6)
-  if iter >= 10 * w then
-    iter = 0
-    randomPosition = GetRandomCoordinates(currentPosition)
-  end
-
-  local speed = GAME_SPEED * self.speed
-  local newPosition = Predict(currentPosition, randomPosition, speed)
-
-  self.x = GetLerp(currentPosition.x, newPosition.x, d)
-  self.y = GetLerp(currentPosition.y, newPosition.y, d)
+-- LOL The move function applies to ALL ants, this is bad :D
+function Ant:move(newPosition, d)
+  self.x = GetLerp(self.x, newPosition.x, d)
+  self.y = GetLerp(self.y, newPosition.y, d)
 end
 
 -- use this one to born new ant later
@@ -60,3 +55,5 @@ end
 
 function Ant:collide()
 end
+
+return Ant

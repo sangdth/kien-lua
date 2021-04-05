@@ -82,10 +82,11 @@ function GetBounded(o)
   return { x = newX, y = newY }
 end
 
-function GetRandomCoordinates(o)
-  local step = love.math.random(-10, 10)
-  local newX = love.math.random(o.x - 10 * step, o.x + 10 * step)
-  local newY = love.math.random(o.y - 10 * step, o.y + 10 * step)
+function GetRandomCoordinates(o, rf)
+  local rx = love.math.random(-100, 100)
+  local ry = love.math.random(-100, 100)
+  local newX = love.math.random(o.x - rx * rf, o.x + ry * rf)
+  local newY = love.math.random(o.y - ry * rf, o.y + rx * rf)
 
   return GetBounded({
       x = newX,

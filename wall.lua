@@ -1,5 +1,3 @@
-
-
 Wall = {}
 
 function Wall:load()
@@ -11,6 +9,7 @@ function Wall:load()
 end
 
 function Wall:draw()
+  love.graphics.print('Total ants: '..table.maxn(Ants), WW - 200, WH - 40)
   love.graphics.setColor(63/255, 165/255, 32/255)
   love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
   love.graphics.setColor(1, 1, 1)
