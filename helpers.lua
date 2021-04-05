@@ -86,5 +86,5 @@ function GetRandomCoordinates(o)
   local newX = love.math.random(o.x - 10 * step, o.x + 10 * step)
   local newY = love.math.random(o.y - 10 * step, o.y + 10 * step)
 
-  return { x = newX, y = newY }
+  return GetBounded({ x = newX, y = newY })
 end

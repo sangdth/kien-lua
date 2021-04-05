@@ -33,7 +33,7 @@ function Ant:move(d)
   local w = love.math.random(6)
   if iter >= 10 * w then
     iter = 0
-    randomPosition = GetBounded(GetRandomCoordinates(currentPosition))
+    randomPosition = GetRandomCoordinates(currentPosition)
   end
 
   local newPosition = Predict(currentPosition, randomPosition)
