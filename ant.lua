@@ -1,9 +1,11 @@
 
 Ant = {}
 Iter = 0
+MaxWallRight = love.graphics.getWidth()
+MaxWallBottom = love.graphics.getHeight()
 
 function Ant:load()
-  self.x      = 500
+  self.x      = love.graphics.getWidth() / 2
   self.y      = love.graphics.getHeight() / 2
   self.width  = 5
   self.height = 5
@@ -11,18 +13,24 @@ function Ant:load()
 end
 
 function Ant:checkWalls()
-  -- Check only the top/left, need to do botto/right
   if self.x < 0 then
-    self.x = 0
+    self.x = 1
+  elseif self.x >= 800 then
+    self.x = 800
   elseif self.y < 0 then
-    self.y = 0
+    self.y = 1
+  elseif self.y > 600 then
+    self.y = 600
+  else
+    self.x = 1
+    self.y = 1
   end
 end
 
 function Ant:move(dt)
   Iter = Iter + dt
-  self.x = 100 + math.sin(Iter) * 100
-  self.y = 100 + math.sin(Iter / 1.5) * 100
+  self.x = math.sin(Iter) * love.graphics.getWidth()
+  self.y = math.sin(Iter / 1.5) * love.graphics.getHeight()
 end
 
 function Ant:update(dt)
@@ -31,5 +39,5 @@ function Ant:update(dt)
 end
 
 function Ant:draw()
-  love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+  love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end
