@@ -3,7 +3,7 @@ require('helpers')
 local Object = require 'classic'
 
 -- Some default settings for Ants
-LIFE_COST_IDLE  = 0.1
+LIFE_COST_IDLE  = 1
 LIFE_COST_WORK  = 0.2
 LIFE_COST_FIGHT = 1
 
@@ -17,12 +17,12 @@ function Ant:new(x, y)
   self.x          = x or 30
   self.y          = y or 30
   self.direction  = 0       -- radians
-  self.width      = 6
-  self.height     = 6
+  self.width      = 10
+  self.height     = 10
   self.speed      = 80
   self.lastSignal = 0
   self.hasFood    = false
-  self.life       = 1000
+  self.life       = 10
   self.random     = { x = 30, y = 30, direction = 0 }
 end
 

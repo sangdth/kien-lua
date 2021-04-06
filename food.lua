@@ -1,5 +1,4 @@
-
-Food = {}
+local Food = {}
 
 function Food:load()
   self.x      = 900
@@ -18,3 +17,5 @@ function Food:draw()
   love.graphics.circle("fill", self.x, self.y, self.width)
   love.graphics.setColor(1, 1, 1)
 end
+
+return Food

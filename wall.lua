@@ -1,4 +1,4 @@
-Wall = {}
+local Wall = {}
 
 function Wall:load()
   self.x = 10
@@ -9,8 +9,11 @@ function Wall:load()
 end
 
 function Wall:draw()
-  love.graphics.print('Total ants: '..table.maxn(Ants), WW - 200, WH - 40)
+  local count = World:countItems()
+  love.graphics.print('Total ants: '..count, WW - 200, WH - 40)
   love.graphics.setColor(63/255, 165/255, 32/255)
   love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
   love.graphics.setColor(1, 1, 1)
 end
+
+return Wall
