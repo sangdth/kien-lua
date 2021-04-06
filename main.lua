@@ -1,6 +1,8 @@
-require('wall')
-require('food')
-Ant = require('ant')
+require 'wall'
+require 'food'
+
+local Ant = require 'ant'
+local bump = require 'bump'
 
 GAME_SPEED  = 2
 SPAWN_SPEED = 1 -- looks like it is second

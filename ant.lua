@@ -1,6 +1,11 @@
 require('helpers')
 
-Object = require('classic')
+local Object = require 'classic'
+
+-- Some default settings for Ants
+LIFE_COST_IDLE  = 0.1
+LIFE_COST_WORK  = 0.2
+LIFE_COST_FIGHT = 1
 
 -- Array of all ants
 AntEmpire = {}
@@ -17,6 +22,7 @@ function Ant:new(x, y)
   self.speed      = 80
   self.lastSignal = 0
   self.hasFood    = false
+  self.life       = 1000
   self.random     = { x = 30, y = 30, direction = 0 }
 end
 
@@ -25,6 +31,13 @@ function Ant:update(d)
   local speed = GAME_SPEED * self.speed
   local randomFactor = love.math.random(0, iter) * iter
   local currentPosition = { x = self.x, y = self.y, direction = self.direction }
+
+  -- Ants at work die faster than idle
+  if self.hasFood and self.life > 0 then
+    self.life = self.life - LIFE_COST_WORK
+  else
+    self.life = self.life - LIFE_COST_IDLE
+  end
 
   if iter >= 20 then
     iter = 0 -- reset
@@ -44,8 +57,11 @@ end
 -- Declaration functions here, keep the load/update/draw clean
 -- LOL The move function applies to ALL ants, this is bad :D
 function Ant:move(newPosition, d)
-  self.x = GetLerp(self.x, newPosition.x, d)
-  self.y = GetLerp(self.y, newPosition.y, d)
+  local x = GetLerp(self.x, newPosition.x, d)
+  local y = GetLerp(self.y, newPosition.y, d)
+
+  self.x = x
+  self.y = y
 end
 
 -- use this one to born new ant later
@@ -53,7 +69,22 @@ function Ant:goOut()
   -- local next = GetRandomCoordinates(0, 0)
 end
 
-function Ant:collide()
+function Ant:checkCollide(obj)
+  local isCollided = CheckCollision(self, obj)
+  if isCollided then
+    local x,y
+    if self.x < obj.x + obj.width then
+      x = self.x - 10
+    else
+      x = self.x + 10
+    end
+    if self.y < obj.y + obj.height then
+      y = self.y - 10
+    else
+      y = self.y + 10
+    end
+    Ant:move({ x = x, y = y }, 0.1)
+  end
 end
 
 return Ant
