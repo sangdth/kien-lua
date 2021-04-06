@@ -83,8 +83,8 @@ function GetBounded(o)
 end
 
 function GetRandomCoordinates(o, rf)
-  local rx = love.math.random(-100, 100)
-  local ry = love.math.random(-100, 100)
+  local rx = love.math.random(-10, 10)
+  local ry = love.math.random(-10, 10)
   local newX = love.math.random(o.x - rx * rf, o.x + ry * rf)
   local newY = love.math.random(o.y - ry * rf, o.y + rx * rf)
 

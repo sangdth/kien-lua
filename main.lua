@@ -3,23 +3,30 @@ local Ant = require 'ant'
 local Food = require 'food'
 local bump = require 'bump'
 
-GAME_SPEED  = 2
+-- Global constants
+GAME_SPEED  = 1
 SPAWN_SPEED = 1 -- looks like it is second
-MAX_ANTS    = 10000
+MAX_ANTS    = 100000
+TOTAL_FOOD  = 400
 
 World = bump.newWorld(10)
 
 -- Entities storage
 local Ants = {}
-local AntTimer = 0
+local Foods = {}
+local AntTimer = 60
 
 function love.load()
   Wall:load()
-  Food:load()
+
+  for i = TOTAL_FOOD, 1, -1
+  do
+    local food = Food()
+    table.insert(Foods, food)
+  end
 end
 
 function love.update(dt)
-  Food:update(dt)
   AntTimer = AntTimer + 1
 
   Counter = 60 * SPAWN_SPEED
@@ -27,22 +34,25 @@ function love.update(dt)
     local babyAnt = Ant(30, 30)
     table.insert(Ants, babyAnt)
 
-    World:add(babyAnt, 30, 30, 10, 10)
     AntTimer = 0
   end
 
   for i,ant in ipairs(Ants) do
     ant:update(dt)
-
-    -- if ant.life <= 0 then
-    --   world:remove(ant)
-    -- end
   end
 end
 
 function love.draw()
   Wall:draw()
-  Food:draw()
+
+  for i,food in ipairs(Foods) do
+    for j = math.sqrt(TOTAL_FOOD), 1, -1
+    do
+      local x = WW / 4 + (i % math.sqrt(TOTAL_FOOD)) * 11
+      local y = WH / 4 + j * 11
+      food:draw(x, y)
+    end
+  end
 
   for i,ant in ipairs(Ants) do
     ant:draw()
