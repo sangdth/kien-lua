@@ -60,7 +60,7 @@ end
 -- Declaration functions here, keep the load/update/draw clean
 -- LOL The move function applies to ALL ants, this is bad :D
 function Ant:move(p, d)
-  local actualX, actualY, cols, len = World:move(self, p.x, p.y)
+  local actualX, actualY, cols, len = World:move(self, p.x, p.y, antFilter)
 
   for i=1,len do
     -- print('collided with ' .. tostring(cols[i].other))
@@ -82,22 +82,13 @@ function Ant:die()
   end
 end
 
-function Ant:checkCollide(obj)
-  local isCollided = CheckCollision(self, obj)
-  if isCollided then
-    local x,y
-    if self.x < obj.x + obj.width then
-      x = self.x - 10
-    else
-      x = self.x + 10
-    end
-    if self.y < obj.y + obj.height then
-      y = self.y - 10
-    else
-      y = self.y + 10
-    end
-    Ant:move({ x = x, y = y }, 0.1)
-  end
+function antFilter(item, other)
+  return 'slide'
+  -- if     other.isCoin   then return 'cross'
+  -- elseif other.isWall   then return 'slide'
+  -- elseif other.isExit   then return 'touch'
+  -- elseif other.isSpring then return 'bounce'
+  -- end
 end
 
 return Ant

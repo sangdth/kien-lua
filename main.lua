@@ -4,7 +4,7 @@ local Food = require 'food'
 local bump = require 'bump'
 
 -- Global constants
-GAME_SPEED  = 1
+GAME_SPEED  = 2
 SPAWN_SPEED = 1 -- looks like it is second
 MAX_ANTS    = 100000
 TOTAL_FOOD  = 400
@@ -21,8 +21,13 @@ function love.load()
 
   for i = TOTAL_FOOD, 1, -1
   do
-    local food = Food()
-    table.insert(Foods, food)
+    for j = math.sqrt(TOTAL_FOOD), 1, -1
+    do
+      local x = WW / 4 + (i % math.sqrt(TOTAL_FOOD)) * 11
+      local y = WH / 4 + j * 11
+      local food = Food(x, y)
+      table.insert(Foods, food)
+    end
   end
 end
 
@@ -46,12 +51,7 @@ function love.draw()
   Wall:draw()
 
   for i,food in ipairs(Foods) do
-    for j = math.sqrt(TOTAL_FOOD), 1, -1
-    do
-      local x = WW / 4 + (i % math.sqrt(TOTAL_FOOD)) * 11
-      local y = WH / 4 + j * 11
-      food:draw(x, y)
-    end
+    food:draw()
   end
 
   for i,ant in ipairs(Ants) do
