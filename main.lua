@@ -4,7 +4,7 @@ local Food = require 'food'
 local bump = require 'bump'
 
 -- Global constants
-GAME_SPEED  = 2
+GAME_SPEED  = 2 -- x2 times of game
 SPAWN_SPEED = 1 -- looks like it is second
 MAX_ANTS    = 100000
 TOTAL_FOOD  = 400

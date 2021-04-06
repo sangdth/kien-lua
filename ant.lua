@@ -60,7 +60,14 @@ end
 -- Declaration functions here, keep the load/update/draw clean
 -- LOL The move function applies to ALL ants, this is bad :D
 function Ant:move(p, d)
-  local actualX, actualY, cols, len = World:move(self, p.x, p.y, antFilter)
+  local actualX, actualY, cols, len = World:move(self, p.x, p.y, AntFilter)
+
+  -- check cols with food and stick with it for 300ms // collectFood
+  -- after taking food, change hasFood status of self
+  -- and start release food signals after trigger bringFoodHome action
+  -- after that trigger the goToFood until can not get food within a timer
+  -- after that timer running out, start the roamingFindFood
+  -- repeat
 
   for i=1,len do
     -- print('collided with ' .. tostring(cols[i].other))
@@ -82,7 +89,11 @@ function Ant:die()
   end
 end
 
-function antFilter(item, other)
+function Ant:leaveSignal()
+
+end
+
+function AntFilter(item, other)
   return 'slide'
   -- if     other.isCoin   then return 'cross'
   -- elseif other.isWall   then return 'slide'
