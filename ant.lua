@@ -1,6 +1,7 @@
-require('helpers')
+require('helpers') -- global helpers/funcs/constants
 
 local Object = require 'classic'
+local Pheromone = require 'pheromone'
 
 -- Some default settings for Ants
 local LIFE_COST_IDLE  = 0.1
@@ -10,7 +11,7 @@ local LIFE_COST_WORK  = 0.2
 -- Extend Ant class from Object
 local Ant = Object:extend()
 
-local iter = 0
+local iterator = { random = 0, pheromone = 0 }
 
 function Ant:new(x, y)
   self.name       = 'ant'
@@ -26,13 +27,15 @@ function Ant:new(x, y)
   self.timer      = 0
   self.life       = 1000
   self.goNext     = { x = 30, y = 30, direction = 0 }
-  World:add(self, self.x, self.y, self.width, self.height)
 end
 
 function Ant:update()
-  iter = iter + 1
+  -- Start counting the iterator
+  iterator.random = iterator.random + 1
+  iterator.pheromone = iterator.pheromone + 1
+
   local speed = GAME_SPEED * self.speed
-  local randomFactor = love.math.random(0, iter)
+  local randomFactor = love.math.random(0, iterator.random)
   local currentPosition = { x = self.x, y = self.y, direction = self.direction }
   local newPosition
 
@@ -41,17 +44,27 @@ function Ant:update()
     self.life = self.life - LIFE_COST_WORK
   elseif self.life > 0 then
     self.life = self.life - LIFE_COST_IDLE
-  elseif self.life <= 0 then
-    Ant:die()
   end
 
-  if iter >= 20 then
-    iter = 0 -- reset
+  if iterator.random >= 20 then
+    iterator.random = 0 -- reset the random move
 
     if self.hasFood then
       self.goNext = NEST_COOR
     else
       self.goNext = GetRandomCoordinates(currentPosition, randomFactor)
+    end
+  end
+
+  -- FIXME: The ant speed makes the release of pheromone
+  --        not consistent any more. Still don't know why
+  --        sometimes it just disappear :D
+  if iterator.pheromone >= 10 then
+    iterator.pheromone = 0 -- reset the pheromone
+
+    if self.hasFood and not self.harvesting then
+      local p = Pheromone(self.x, self.y)
+      table.insert(Pheromones, p)
     end
   end
 
@@ -69,7 +82,7 @@ function Ant:update()
     end
   end
 
-  if self.life > 0 then
+  if self.life > 10 then
     Ant.move(self, newPosition)
   end
 end
@@ -77,8 +90,10 @@ end
 function Ant:draw()
   if self.harvesting or self.hasFood then
     love.graphics.setColor(160/255, 100/255, 30/255)
-  elseif self.life <= 0 then
+  elseif self.life <= 10 then
     love.graphics.setColor(180/255, 30/255, 30/255)
+  elseif self.life <= 0 then
+    love.graphics.setColor(100/255, 90/255, 90/255)
   else
     love.graphics.setColor(60/255, 160/255, 30/255)
   end
@@ -86,23 +101,14 @@ function Ant:draw()
   love.graphics.setColor(1, 1, 1)
 end
 
--- Declaration functions here, keep the load/update/draw clean
--- LOL The move function applies to ALL ants, this is bad :D
 function Ant:move(p)
   local actualX, actualY, cols, len = World:move(self, p.x, p.y, AntFilter)
-
-  -- check cols with food and stick with it for 300ms // collectFood
-  -- after taking food, change hasFood status of self
-  -- and start release food signals after trigger bringFoodHome action
-  -- after that trigger the goToFood until can not get food within a timer
-  -- after that timer running out, start the roamingFindFood
-  -- repeat
 
   for i=1,len do
     local other = cols[i].other
     if other.name == 'food' and self.timer == 0 then
       self.harvesting = true
-      self.timer = 300
+      self.timer = 30
     elseif other.name == 'nest' and self.hasFood then
       self.hasFood = false
     end
@@ -112,29 +118,14 @@ function Ant:move(p)
   self.y = actualY
 end
 
--- use this one to born new ant later
-function Ant:goOut()
-  -- local next = GetRandomCoordinates(0, 0)
-end
-
-function Ant:die()
-  if World:hasItem(self) then
-    print('removed item'..self)
-    World:remove(self)
+  -- return 'touch', 'bounce', 'cross', 'slide'
+function AntFilter(_, other) -- it is (item, other)
+  local m = other.name
+  if     m == 'pheromone'   then  return 'cross'
+  elseif m == 'nest'        then  return 'cross'
+  elseif m == 'food'        then  return 'slide'
+  else                            return 'slide'
   end
-end
-
-function Ant:leaveSignal()
-
-end
-
-function AntFilter(item, other)
-  return 'slide'
-  -- if     other.isCoin   then return 'cross'
-  -- elseif other.isWall   then return 'slide'
-  -- elseif other.isExit   then return 'touch'
-  -- elseif other.isSpring then return 'bounce'
-  -- end
 end
 
 return Ant

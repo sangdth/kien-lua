@@ -10,7 +10,7 @@ end
 
 function Wall:draw()
   local count = World:countItems()
-  love.graphics.print('Total ants: '..count, WW - 200, WH - 40)
+  love.graphics.print('Total objects: '..count, WW - 200, WH - 40)
   love.graphics.setColor(120/255, 120/255, 120/255)
   love.graphics.rectangle('line', self.x, self.y, self.width, self.height)
   love.graphics.setColor(1, 1, 1)
