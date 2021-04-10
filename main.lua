@@ -77,11 +77,12 @@ function love.draw()
     food:draw()
   end
 
+  for _,p in ipairs(Pheromones) do
+    p:draw()
+  end
+
   for _,ant in ipairs(Ants) do
     ant:draw()
   end
 
-  for _,p in ipairs(Pheromones) do
-    p:draw()
-  end
 end

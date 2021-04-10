@@ -10,7 +10,6 @@ function Pheromone:new(x, y)
   self.y        = y
   self.radius   = 5
   self.life     = 100
-  World:add(self, self.x, self.y, self.radius * 2, self.radius * 2)
 end
 
 function Pheromone:update()
@@ -19,7 +18,7 @@ end
 
 function Pheromone:draw()
   love.graphics.setColor(20/255, 100/255, 255/255, self.life / self.life * 2)
-  love.graphics.circle('fill', self.x, self.y, self.radius)
+  love.graphics.circle('fill', self.x + 5, self.y + 5, self.radius)
   love.graphics.setColor(1, 1, 1)
 end
 

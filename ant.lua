@@ -11,7 +11,10 @@ local LIFE_COST_WORK  = 0.2
 -- Extend Ant class from Object
 local Ant = Object:extend()
 
-local iterator = { random = 0, pheromone = 0 }
+local iterator = {
+  random = 0,
+  pheromone = 0,
+}
 
 function Ant:new(x, y)
   self.name       = 'ant'
@@ -64,13 +67,14 @@ function Ant:update()
 
     if self.hasFood and not self.harvesting then
       local p = Pheromone(self.x, self.y)
+      World:add(p, p.x, p.y, p.radius * 2, p.radius * 2)
       table.insert(Pheromones, p)
     end
   end
 
   newPosition = Predict(currentPosition, self.goNext, speed)
 
-  if self.harvesting then
+  if self.harvesting and not self.hasFood then
     if self.timer > 0 then
       newPosition = currentPosition
       self.timer = self.timer - 1     -- keep harvesting
